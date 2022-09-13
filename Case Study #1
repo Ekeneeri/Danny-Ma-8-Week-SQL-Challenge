@@ -1,0 +1,30 @@
+-- 1. What is the total amount each customer spent at the restaurant?
+
+SELECT customer_id AS customer, SUM(price) AS total_amount
+FROM dannys_diner.menu
+  INNER JOIN dannys_diner.sales
+	  USING(product_id)
+GROUP BY sales.customer_id;
+
+-- 2. How many days has each customer visited the restaurant?
+
+SELECT customer_id AS customer, COUNT(DISTINCT(order_date)) AS visits
+FROM dannys_diner.sales
+GROUP BY customer_id;
+
+-- 3. What was the first item from the menu purchased by each customer?
+
+WITH first_item AS (
+   SELECT customer_id, MIN(order_date) AS first_date
+   FROM dannys_diner.sales AS s
+   GROUP BY customer_id
+)
+SELECT s.customer_id AS customer, product_name AS item 
+FROM dannys_diner.sales AS s
+INNER JOIN first_item AS f
+	ON s.customer_id = f.customer_id AND s.order_date = f.first_date
+INNER JOIN dannys_diner.menu
+	USING(product_id)
+ORDER BY 1;
+
+-- 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
