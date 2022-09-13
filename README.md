@@ -1,4 +1,4 @@
-Information:                                    https://8weeksqlchallenge.com/
+Information here:                                    https://8weeksqlchallenge.com/
 
 
 Case Study #1 - Danny’s Diner                 - https://www.db-fiddle.com/f/2rM8RAnq7h5LLDTzZiRWcd/138
