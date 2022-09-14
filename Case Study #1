@@ -44,7 +44,7 @@ GROUP BY product_name;
 -- 5. Which item was the most popular for each customer?
 
 WITH product_purchase AS (
-  SELECT customer_id, product_name, RANK() OVER (ORDER BY COUNT(product_id) DESC) AS purchase_freq
+  SELECT customer_id, product_name, RANK() OVER (PARTITION BY customer_id ORDER BY COUNT(product_id) DESC) AS purchase_freq
   FROM dannys_diner.sales
   	INNER JOIN dannys_diner.menu 
   	USING(product_id)
