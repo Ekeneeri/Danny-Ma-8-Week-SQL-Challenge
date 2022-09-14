@@ -28,6 +28,7 @@ INNER JOIN dannys_diner.menu
 ORDER BY 1;
 
 -- 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
+
 WITH most_purchase AS (
   SELECT MAX(DISTINCT(product_id)) AS purchase_times
   FROM dannys_diner.sales
@@ -39,3 +40,21 @@ INNER JOIN most_purchase AS p
 INNER JOIN dannys_diner.sales
 	USING(product_id)
 GROUP BY product_name;
+
+-- 5. Which item was the most popular for each customer?
+
+WITH product_purchase AS (
+  SELECT customer_id, product_name, RANK() OVER (ORDER BY COUNT(product_id) DESC) AS purchase_freq
+  FROM dannys_diner.sales
+  	INNER JOIN dannys_diner.menu 
+  	USING(product_id)
+  GROUP BY customer_id, product_name
+)
+SELECT customer_id, product_name
+  FROM (
+    SELECT p.*
+    FROM product_purchase AS p    
+  ) AS sub
+WHERE purchase_freq = 1
+ORDER BY customer_id;
+
