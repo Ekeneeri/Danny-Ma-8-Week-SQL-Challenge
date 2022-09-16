@@ -58,3 +58,19 @@ SELECT customer_id, product_name
 WHERE purchase_freq = 1
 ORDER BY customer_id;
 
+-- 6. Which item was purchased first by the customer after they became a member?
+
+SELECT customer_id, product_name
+FROM (
+  		SELECT customer_id, product_name, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date ASC) AS row_num
+  		FROM (
+        SELECT s.customer_id, product_id, order_date, join_date
+    	FROM dannys_diner.sales AS s
+    		INNER JOIN dannys_diner.members AS m
+    		ON s.customer_id = m.customer_id 
+    		AND s.order_date > m.join_date
+     		) AS members_purchase
+  			INNER JOIN dannys_diner.menu 
+  			USING (product_id)
+) AS first_purchase
+WHERE row_num = 1;
