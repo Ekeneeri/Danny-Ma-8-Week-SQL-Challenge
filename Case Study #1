@@ -74,3 +74,18 @@ FROM (
   			USING (product_id)
 ) AS first_purchase
 WHERE row_num = 1;
+
+-- 7. Which item was purchased just before the customer became a member?
+
+WITH item_purchase AS (
+  SELECT m.*, product_name, order_date, RANK() OVER (PARTITION BY customer_id ORDER BY product_name DESC) AS rnk
+  FROM dannys_diner.members AS m
+  INNER JOIN dannys_diner.sales
+  USING(customer_id)
+  INNER JOIN dannys_diner.menu
+  USING(product_id)
+  GROUP BY customer_id, join_date, product_name, order_date
+)
+SELECT customer_id, product_name
+FROM item_purchase AS i
+WHERE order_date < join_date AND rnk = 1;
