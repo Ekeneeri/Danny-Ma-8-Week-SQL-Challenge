@@ -89,3 +89,20 @@ WITH item_purchase AS (
 SELECT customer_id, product_name
 FROM item_purchase AS i
 WHERE order_date < join_date AND rnk = 1;
+
+-- 8. What is the total items and amount spent for each member before they became a member?
+
+WITH item_purchase AS (
+  SELECT m.*, order_date, product_id, price
+  FROM dannys_diner.members AS m
+  INNER JOIN dannys_diner.sales
+  USING(customer_id)
+  INNER JOIN dannys_diner.menu
+  USING(product_id)
+  GROUP BY customer_id, join_date, order_date, product_id, price
+  
+)
+SELECT customer_id, COUNT(product_id) AS total_items, SUM(price)
+FROM item_purchase AS i
+WHERE order_date < join_date
+GROUP BY customer_id;
