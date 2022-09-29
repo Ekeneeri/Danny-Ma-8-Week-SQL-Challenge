@@ -127,7 +127,7 @@ ORDER BY customer_id;
 
 WITH item_points AS (
   SELECT customer_id, 
-  CASE WHEN order_date <= join_date + INTERVAL '7 DAY' THEN price * 20
+  CASE WHEN order_date <= join_date + INTERVAL '7' DAY THEN price * 20
   WHEN product_id = 1 THEN price * 20
   ELSE price * 10 END
   AS points
